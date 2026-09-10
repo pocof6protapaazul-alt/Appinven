@@ -63,6 +63,24 @@ npm run build    # generar versión de producción
 npm run preview  # previsualizar la versión de producción
 ```
 
+## 📲 Instalar como app (PWA)
+
+La aplicación es una **PWA**: se puede instalar como app en el teléfono o el escritorio y funciona sin conexión (los datos se guardan en el dispositivo).
+
+1. Publica la app en un hosting con HTTPS (por ejemplo **Vercel** o **Netlify**, conectando este repositorio). La PWA requiere HTTPS.
+2. Abre la URL publicada en el navegador:
+   - **Android / Chrome:** aparece el aviso "Instalar app" o entra al menú ⋮ → *Instalar aplicación*.
+   - **iPhone / Safari:** botón *Compartir* → *Agregar a pantalla de inicio*.
+   - **Escritorio / Chrome o Edge:** ícono de instalación ⊕ en la barra de direcciones.
+3. Quedará como un ícono independiente y se abrirá en pantalla completa, como una app nativa.
+
+> Para probar la PWA localmente usa `npm run build && npm run preview` (el service worker solo se activa en la versión de producción).
+
+Si cambias el diseño del ícono, edita `scripts/icon-source.svg` y regenera los PNG con:
+```bash
+node scripts/generate-icons.mjs
+```
+
 ## 🛠️ Tecnologías
 - React 19 + Vite
 - React Router
