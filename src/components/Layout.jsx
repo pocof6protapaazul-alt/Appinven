@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, Package, Users, Truck, FileText,
-  Settings, Menu, X, ChevronRight, Building2, BarChart3
+  Settings, Menu, X, ChevronRight, Building2, BarChart3, ShoppingCart
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 
@@ -12,6 +12,7 @@ const navItems = [
   { to: '/clientes', label: 'Clientes', icon: Users },
   { to: '/proveedores', label: 'Proveedores', icon: Truck },
   { to: '/remisiones', label: 'Notas de Remisión', icon: FileText },
+  { to: '/compras', label: 'Compras', icon: ShoppingCart },
   { to: '/reportes', label: 'Reportes', icon: BarChart3 },
   { to: '/empresa', label: 'Mi Empresa', icon: Building2 },
 ];

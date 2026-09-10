@@ -1,20 +1,21 @@
 import { useApp } from '../context/AppContext';
-import { Package, Users, FileText, AlertTriangle, TrendingUp, DollarSign, Truck, ArrowRight } from 'lucide-react';
+import { Package, Users, FileText, AlertTriangle, TrendingUp, DollarSign, ShoppingCart, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function Dashboard() {
-  const { productos, clientes, proveedores, remisiones } = useApp();
+  const { productos, clientes, remisiones, compras } = useApp();
 
   const stockBajo = productos.filter(p => p.stock <= p.stockMin);
   const remisionesHoy = remisiones.filter(r => r.fecha === new Date().toISOString().split('T')[0]);
   const totalInventario = productos.reduce((s, p) => s + (p.stock * p.costo), 0);
   const ventasMes = remisiones.filter(r => r.fecha?.startsWith('2026-09')).reduce((s, r) => s + (r.total || 0), 0);
+  const comprasMes = compras.filter(c => c.fecha?.startsWith('2026-09') && c.estado !== 'cancelada').reduce((s, c) => s + (c.total || 0), 0);
 
   const stats = [
     { label: 'Productos', value: productos.length, icon: Package, color: '#6366f1', bg: '#eef2ff', link: '/inventario' },
     { label: 'Clientes', value: clientes.length, icon: Users, color: '#10b981', bg: '#ecfdf5', link: '/clientes' },
-    { label: 'Proveedores', value: proveedores.length, icon: Truck, color: '#f59e0b', bg: '#fffbeb', link: '/proveedores' },
     { label: 'Remisiones', value: remisiones.length, icon: FileText, color: '#3b82f6', bg: '#eff6ff', link: '/remisiones' },
+    { label: 'Compras', value: compras.length, icon: ShoppingCart, color: '#f59e0b', bg: '#fffbeb', link: '/compras' },
   ];
 
   return (
@@ -61,11 +62,11 @@ export default function Dashboard() {
         </div>
         <div className="metric-card metric-card--purple">
           <div className="metric-header">
-            <FileText size={20} />
-            <span>Remisiones Hoy</span>
+            <ShoppingCart size={20} />
+            <span>Compras del Mes</span>
           </div>
-          <p className="metric-value">{remisionesHoy.length}</p>
-          <p className="metric-sub">Documentos emitidos</p>
+          <p className="metric-value">{comprasMes.toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })}</p>
+          <p className="metric-sub">{remisionesHoy.length} remisiones hoy</p>
         </div>
       </div>
 

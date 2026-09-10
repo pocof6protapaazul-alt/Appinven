@@ -1,8 +1,8 @@
 import { useApp } from '../context/AppContext';
-import { BarChart3, TrendingUp, Package, DollarSign, Award } from 'lucide-react';
+import { BarChart3, TrendingUp, Package, DollarSign, Award, ShoppingCart } from 'lucide-react';
 
 export default function Reportes() {
-  const { productos, remisiones } = useApp();
+  const { productos, remisiones, compras } = useApp();
   const money = (n) => (n || 0).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' });
 
   const remValidas = remisiones.filter(r => r.estado !== 'cancelada');
@@ -10,6 +10,20 @@ export default function Reportes() {
   const valorInventario = productos.reduce((s, p) => s + p.stock * p.costo, 0);
   const valorVentaInv = productos.reduce((s, p) => s + p.stock * p.precio, 0);
   const margenPotencial = valorVentaInv - valorInventario;
+
+  // Compras
+  const comprasValidas = compras.filter(c => c.estado !== 'cancelada');
+  const totalCompras = comprasValidas.reduce((s, c) => s + (c.total || 0), 0);
+  const balance = totalVentas - totalCompras;
+
+  // Compras por proveedor
+  const comprasPorProv = {};
+  comprasValidas.forEach(c => {
+    const n = c.proveedorNombre || 'Sin proveedor';
+    comprasPorProv[n] = (comprasPorProv[n] || 0) + (c.total || 0);
+  });
+  const topProveedores = Object.entries(comprasPorProv).sort((a, b) => b[1] - a[1]).slice(0, 5);
+  const maxProv = topProveedores[0]?.[1] || 1;
 
   // Productos más vendidos
   const ventasPorProd = {};
@@ -58,9 +72,9 @@ export default function Reportes() {
           <p className="metric-sub">Utilidad estimada en inventario</p>
         </div>
         <div className="metric-card metric-card--orange">
-          <div className="metric-header"><Award size={20}/><span>Ticket Promedio</span></div>
-          <p className="metric-value">{money(remValidas.length ? totalVentas/remValidas.length : 0)}</p>
-          <p className="metric-sub">Por remisión</p>
+          <div className="metric-header"><ShoppingCart size={20}/><span>Compras Totales</span></div>
+          <p className="metric-value">{money(totalCompras)}</p>
+          <p className="metric-sub">{comprasValidas.length} órdenes · Balance: <strong style={{color: balance >= 0 ? '#059669' : '#dc2626'}}>{money(balance)}</strong></p>
         </div>
       </div>
 
@@ -89,6 +103,20 @@ export default function Reportes() {
                 <div key={nombre} className="bar-row">
                   <div className="bar-label"><span>{nombre}</span><strong>{money(total)}</strong></div>
                   <div className="bar-track"><div className="bar-fill" style={{width:`${(total/maxCli)*100}%`,background:'#10b981'}}/></div>
+                </div>
+              ))}
+          </div>
+        </div>
+
+        {/* Principales proveedores */}
+        <div className="card card--full">
+          <div className="card-header"><h2 className="card-title"><ShoppingCart size={18}/> Principales Proveedores (por compras)</h2></div>
+          <div className="card-body">
+            {topProveedores.length === 0 ? <p className="text-muted">Sin datos de compras aún</p> :
+              topProveedores.map(([nombre, total]) => (
+                <div key={nombre} className="bar-row">
+                  <div className="bar-label"><span>{nombre}</span><strong>{money(total)}</strong></div>
+                  <div className="bar-track"><div className="bar-fill" style={{width:`${(total/maxProv)*100}%`,background:'#f59e0b'}}/></div>
                 </div>
               ))}
           </div>

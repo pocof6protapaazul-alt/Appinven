@@ -13,7 +13,7 @@ const regimenes = [
 ];
 
 export default function Empresa() {
-  const { empresa, setEmpresa, productos, contactos, remisiones } = useApp();
+  const { empresa, setEmpresa, productos, contactos, remisiones, compras } = useApp();
   const [form, setForm] = useState(empresa);
   const [saved, setSaved] = useState(false);
   const fileRef = useRef();
@@ -34,7 +34,7 @@ export default function Empresa() {
   };
 
   const exportData = () => {
-    const data = { empresa, productos, contactos, remisiones, exportado: new Date().toISOString() };
+    const data = { empresa, productos, contactos, remisiones, compras, exportado: new Date().toISOString() };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -118,6 +118,7 @@ export default function Empresa() {
               <div><strong>{productos.length}</strong> productos</div>
               <div><strong>{contactos.length}</strong> contactos</div>
               <div><strong>{remisiones.length}</strong> remisiones</div>
+              <div><strong>{compras.length}</strong> compras</div>
             </div>
             <button className="btn btn-outline" onClick={exportData}><Download size={16}/> Descargar Respaldo (JSON)</button>
           </div>

@@ -30,11 +30,19 @@ Aplicación web completa para el control de una empresa: inventarios, notas de r
 - **Vista previa e impresión**
 - **Descarga en PDF** con el logotipo, RFC y datos fiscales de la empresa
 
+### 🛒 Compras (órdenes a proveedores)
+- Registro de órdenes de compra con selección de proveedor y productos
+- Cálculo automático de subtotal, IVA (16%, opcional) y total
+- Estados: pendiente / recibida / cancelada
+- **Al marcar una compra como "Recibida", el stock del inventario aumenta automáticamente** y se actualiza el costo del producto
+- Si se cancela o elimina una compra recibida, el stock se revierte automáticamente
+- Búsqueda por folio o proveedor
+
 ### 📈 Reportes
 - Ventas totales, valor del inventario y margen potencial
-- Ticket promedio
+- Compras totales y **balance** (ventas − compras)
 - Productos más vendidos (gráfico de barras)
-- Mejores clientes
+- Mejores clientes y principales proveedores
 - Inventario por categoría
 
 ### ⚙️ Mi Empresa
