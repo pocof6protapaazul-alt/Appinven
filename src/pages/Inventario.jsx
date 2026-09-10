@@ -3,7 +3,7 @@ import { useApp } from '../context/AppContext';
 import { Plus, Edit2, Trash2, Search, AlertTriangle, X, Save, Package } from 'lucide-react';
 
 const emptyProd = { codigo: '', nombre: '', descripcion: '', categoria: '', unidad: 'PZA', precio: '', costo: '', stock: '', stockMin: '', ubicacion: '' };
-const categorias = ['Electrónica', 'Accesorios', 'Mobiliario', 'Papelería', 'Limpieza', 'Herramientas', 'Alimentos', 'Ropa', 'Otros'];
+const categorias = ['Chalecos', 'Chamarras', 'Pants', 'Niño', 'Shorts', 'Otros'];
 const unidades = ['PZA', 'KG', 'LT', 'MT', 'CJA', 'PAQ', 'DOC', 'PAR'];
 
 export default function Inventario() {
