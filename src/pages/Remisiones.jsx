@@ -62,13 +62,13 @@ export default function Remisiones() {
   const total = subtotal; // Las notas se manejan sin IVA
 
   const handleSave = () => {
-    if (!form.clienteId) return alert('Selecciona un cliente');
     if (form.items.length === 0) return alert('Agrega al menos un producto');
-    const cliente = clientes.find(c => c.id === parseInt(form.clienteId));
+    // El cliente es opcional: si no se elige, la nota queda a "Público en general"
+    const cliente = form.clienteId ? clientes.find(c => c.id === parseInt(form.clienteId)) : null;
     const data = {
       ...form,
-      clienteId: parseInt(form.clienteId),
-      clienteNombre: cliente?.nombre,
+      clienteId: form.clienteId ? parseInt(form.clienteId) : null,
+      clienteNombre: cliente?.nombre || 'Público en general',
       subtotal, iva: 0, total,
     };
     if (modal === 'add') addRemision(data);
@@ -140,9 +140,9 @@ export default function Remisiones() {
                   <input className="input" type="date" value={form.fecha} onChange={e=>setForm(p=>({...p,fecha:e.target.value}))}/>
                 </div>
                 <div className="form-group">
-                  <label>Cliente *</label>
+                  <label>Cliente (opcional)</label>
                   <select className="input" value={form.clienteId} onChange={e=>setForm(p=>({...p,clienteId:e.target.value}))}>
-                    <option value="">Seleccionar cliente...</option>
+                    <option value="">Público en general (sin nombre)</option>
                     {clientes.map(c=><option key={c.id} value={c.id}>{c.nombre}{c.empresa?` - ${c.empresa}`:''}</option>)}
                   </select>
                 </div>
