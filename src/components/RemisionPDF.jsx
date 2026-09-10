@@ -1,8 +1,9 @@
 import { useRef, useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { X, Printer, FileDown, Image } from 'lucide-react';
+import { X, Printer, FileDown, Image, MessageCircle } from 'lucide-react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import { enviarRemisionWhatsApp } from '../utils/whatsapp';
 
 export default function RemisionPDF({ remision, onClose }) {
   const { empresa, clientes } = useApp();
@@ -95,12 +96,15 @@ export default function RemisionPDF({ remision, onClose }) {
   const clienteNombre = cliente?.nombre || remision.clienteNombre || '—';
   const inicial = (empresa.nombre || '?').charAt(0).toUpperCase();
 
+  const handleWhatsApp = () => enviarRemisionWhatsApp(empresa, remision, cliente);
+
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal modal--doc" onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h2>Nota {remision.folio}</h2>
           <div className="doc-actions">
+            <button className="btn btn-whatsapp btn-sm" onClick={handleWhatsApp}><MessageCircle size={15}/> WhatsApp</button>
             <button className="btn btn-outline btn-sm" onClick={handlePrint}><Printer size={15}/> Imprimir</button>
             <button className="btn btn-outline btn-sm" onClick={handleDownloadJPG} disabled={generating}>
               <Image size={15}/> {generating === 'jpg' ? 'Generando...' : 'JPG'}
@@ -176,12 +180,10 @@ export default function RemisionPDF({ remision, onClose }) {
               </tbody>
             </table>
 
-            {/* Totales */}
+            {/* Total (sin IVA) */}
             <div className="m-totals">
               <div className="m-totals-box">
-                <div className="m-total-row"><span>Subtotal</span><span>{money(remision.subtotal)}</span></div>
-                {remision.iva > 0 && <div className="m-total-row"><span>IVA (16%)</span><span>{money(remision.iva)}</span></div>}
-                <div className="m-total-grand"><span>Total</span><span>{money(remision.total)}</span></div>
+                <div className="m-total-grand"><span>Total</span><span>{money(remision.subtotal)}</span></div>
               </div>
             </div>
 

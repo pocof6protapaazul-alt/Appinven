@@ -106,6 +106,8 @@
 .btn-ghost { background: transparent; color: var(--text-muted); }
 .btn-ghost:hover { background: #f1f5f9; }
 .btn-danger-text { color: var(--danger); }
+.btn-whatsapp { background: #25d366; color: #fff; }
+.btn-whatsapp:hover { background: #1ebe5b; }
 .btn-sm { padding: 6px 12px; font-size: 13px; }
 
 /* ===== TOOLBAR ===== */
@@ -130,6 +132,7 @@
 .icon-btn--edit:hover { color: var(--info); border-color: var(--info); }
 .icon-btn--delete:hover { color: var(--danger); border-color: var(--danger); }
 .icon-btn--view:hover { color: var(--primary); border-color: var(--primary); }
+.icon-btn--wa:hover { color: #25d366; border-color: #25d366; }
 .stock-btn { background: none; border: 1px dashed transparent; padding: 2px 8px; border-radius: 6px; cursor: pointer; font-size: 14px; }
 .stock-btn:hover { border-color: var(--border); background: #f8fafc; }
 

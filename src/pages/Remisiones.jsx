@@ -1,19 +1,19 @@
 import { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { Plus, Edit2, Trash2, Search, X, Save, FileText, Printer } from 'lucide-react';
+import { Plus, Edit2, Trash2, Search, X, Save, FileText, Printer, MessageCircle } from 'lucide-react';
 import RemisionPDF from '../components/RemisionPDF';
+import { enviarRemisionWhatsApp } from '../utils/whatsapp';
 
 const emptyRem = () => ({
   fecha: new Date().toISOString().split('T')[0],
   clienteId: '',
   estado: 'pendiente',
   observaciones: '',
-  aplicaIva: true,
   items: [],
 });
 
 export default function Remisiones() {
-  const { remisiones, productos, clientes, addRemision, updateRemision, deleteRemision } = useApp();
+  const { empresa, remisiones, productos, clientes, addRemision, updateRemision, deleteRemision } = useApp();
   const [search, setSearch] = useState('');
   const [modal, setModal] = useState(null);
   const [form, setForm] = useState(emptyRem());
@@ -30,7 +30,7 @@ export default function Remisiones() {
 
   const openAdd = () => { setForm(emptyRem()); setModal('add'); };
   const openEdit = (r) => {
-    setForm({ ...r, aplicaIva: r.iva > 0 });
+    setForm({ ...r });
     setEditId(r.id); setModal('edit');
   };
   const closeModal = () => { setModal(null); setForm(emptyRem()); setEditId(null); setProdSel(''); setCantSel('1'); };
@@ -59,8 +59,7 @@ export default function Remisiones() {
   const removeItem = (idx) => setForm(f => ({ ...f, items: f.items.filter((_, x) => x !== idx) }));
 
   const subtotal = form.items.reduce((s, i) => s + i.subtotal, 0);
-  const iva = form.aplicaIva ? subtotal * 0.16 : 0;
-  const total = subtotal + iva;
+  const total = subtotal; // Las notas se manejan sin IVA
 
   const handleSave = () => {
     if (!form.clienteId) return alert('Selecciona un cliente');
@@ -70,7 +69,7 @@ export default function Remisiones() {
       ...form,
       clienteId: parseInt(form.clienteId),
       clienteNombre: cliente?.nombre,
-      subtotal, iva, total,
+      subtotal, iva: 0, total,
     };
     if (modal === 'add') addRemision(data);
     else updateRemision(editId, data);
@@ -113,6 +112,7 @@ export default function Remisiones() {
                   </td>
                   <td>
                     <div className="action-btns">
+                      <button className="icon-btn icon-btn--wa" onClick={()=>enviarRemisionWhatsApp(empresa, r, clientes.find(c=>c.id===r.clienteId))} title="Enviar por WhatsApp"><MessageCircle size={15}/></button>
                       <button className="icon-btn icon-btn--view" onClick={()=>setPreview(r)} title="Ver / Imprimir"><Printer size={15}/></button>
                       <button className="icon-btn icon-btn--edit" onClick={()=>openEdit(r)} title="Editar"><Edit2 size={15}/></button>
                       <button className="icon-btn icon-btn--delete" onClick={()=>setConfirmDelete(r.id)} title="Eliminar"><Trash2 size={15}/></button>
@@ -194,12 +194,8 @@ export default function Remisiones() {
                   <textarea className="input" rows={3} value={form.observaciones} onChange={e=>setForm(p=>({...p,observaciones:e.target.value}))} placeholder="Notas adicionales, condiciones de entrega..."/>
                 </div>
                 <div className="rem-totals">
-                  <label className="check-row">
-                    <input type="checkbox" checked={form.aplicaIva} onChange={e=>setForm(p=>({...p,aplicaIva:e.target.checked}))}/> Aplicar IVA (16%)
-                  </label>
-                  <div className="total-row"><span>Subtotal:</span><strong>{subtotal.toLocaleString('es-MX',{style:'currency',currency:'MXN'})}</strong></div>
-                  <div className="total-row"><span>IVA (16%):</span><strong>{iva.toLocaleString('es-MX',{style:'currency',currency:'MXN'})}</strong></div>
                   <div className="total-row total-row--grand"><span>TOTAL:</span><strong>{total.toLocaleString('es-MX',{style:'currency',currency:'MXN'})}</strong></div>
+                  <p className="text-muted small" style={{marginTop:'4px'}}>Precios sin IVA</p>
                 </div>
               </div>
             </div>
